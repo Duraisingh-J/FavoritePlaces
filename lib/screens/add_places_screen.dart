@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:favorite_places/model/place.dart';
 import 'package:favorite_places/providers/user_places.dart';
 import 'package:favorite_places/widgets/image_input.dart';
@@ -13,14 +15,17 @@ class AddPlacesScreen extends ConsumerStatefulWidget {
 
 class _AddPlacesScreenState extends ConsumerState<AddPlacesScreen> {
   final _titlecontroller = TextEditingController();
+  File? _selectedImage;
 
   void _savePlace() {
     final title = _titlecontroller.text;
 
-    if (title.isEmpty) {
+    if (title.isEmpty || _selectedImage == null) {
       return;
     }
-    ref.read(userPlacersProvider.notifier).addPlace(Place(title: title));
+    ref
+        .read(userPlacersProvider.notifier)
+        .addPlace(Place(title: title, image: _selectedImage!));
     Navigator.of(context).pop();
   }
 
@@ -45,12 +50,25 @@ class _AddPlacesScreenState extends ConsumerState<AddPlacesScreen> {
           children: [
             TextField(
               controller: _titlecontroller,
-              decoration: InputDecoration(labelText: 'Title', border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)), ),
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
+              decoration: InputDecoration(
+                labelText: 'Title',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             SizedBox(height: 12),
-            ImageInput(),
-            SizedBox(height: 12,),
+            ImageInput(
+              onPickImage: (image) {
+                _selectedImage = image;
+              },
+            ),
+            SizedBox(height: 12),
             ElevatedButton.icon(
               onPressed: _savePlace,
               label: Text("Add"),

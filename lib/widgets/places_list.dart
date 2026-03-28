@@ -20,6 +20,10 @@ class PlacesList extends StatelessWidget {
       itemBuilder: (cdx, index) => GestureDetector(
         onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => PlaceDetails(place: places[index]))),
         child: ListTile(
+          leading: CircleAvatar(
+            backgroundImage: FileImage(places[index].image),
+            radius: 12,
+          ),
           title: Text(places[index].title, style: Theme.of(context).textTheme.titleMedium!.copyWith(
             color: Theme.of(context).colorScheme.onSurface,
           
